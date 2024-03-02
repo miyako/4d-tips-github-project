@@ -1,0 +1,6 @@
+actions-runner/*
+example/userPreferences.*
+example/Project/DerivedData/*
+example/Data/*
+example/Libraries/lib4d-arm64.dylib
+example/Settings/buildApp.4DSettings

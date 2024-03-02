@@ -1,0 +1,50 @@
+name: 🎉Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_agent_macos: 
+        type: string
+        default: /Applications/4D v20 R3/4D.app/Contents/MacOS/4D
+      build_agent_windows: 
+        type: string
+        default: C:/Program Files/4D/4D v20 R3/4D/4D.exe
+      build_dir: 
+        type: string
+        default: build
+      build_project_name: 
+        type: string
+        default: example      
+      build_project_path: 
+        type: string
+        default: example/Project/example.4DProject
+      build_settings_path: 
+        type: string
+        default: example/Settings/buildApp.4DSettings
+jobs:
+
+  build_both:
+    name: build self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos, windows]
+        include: 
+          - platform: macos
+            build_agent: ${{ inputs.build_agent_macos }}
+          - platform: windows
+            build_agent: ${{ inputs.build_agent_windows }}
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+    steps:
+      - name: checkout 
+        uses: actions/checkout@v4
+
+      - name: build application
+        uses: miyako/4D/.github/actions/build-application/@v1
+        with:
+          build_project_name: ${{ inputs.build_project_name }}
+          build_agent: ${{ matrix.build_agent }}
+          build_dir: ${{ inputs.build_dir }}
+          build_project_path: ${{ inputs.build_project_path }}
+          build_settings_path: ${{ inputs.build_settings_path }}
+          platform: ${{ matrix.platform }}
